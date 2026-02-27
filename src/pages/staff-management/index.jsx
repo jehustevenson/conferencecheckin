@@ -19,7 +19,6 @@ const StaffManagement = () => {
   const [connectionStatus, setConnectionStatus] = useState('connected');
   const [loading, setLoading] = useState(true);
 
-  // Fetch real staff from Supabase
   const fetchStaff = async () => {
     setLoading(true);
     const { data, error } = await supabase
@@ -40,7 +39,6 @@ const StaffManagement = () => {
     setLoading(false);
   };
 
-  // Fetch real activity from check_in_logs
   const fetchActivity = async () => {
     const { data, error } = await supabase
       .from('check_in_logs')
@@ -76,28 +74,28 @@ const StaffManagement = () => {
     checkInsToday: 0
   };
 
-  const handleAddStaff = (newStaff) => {
-    fetchStaff(); // Refresh from DB instead of local state
+  const handleAddStaff = () => {
+    fetchStaff();
   };
 
- const handleRemoveStaff = async (staffId) => {
-  const staff = staffMembers.find(s => s.id === staffId);
-  if (staff && window.confirm(`Are you sure you want to remove ${staff.name}?`)) {
-    const { error } = await supabase.rpc('delete_staff_user', { user_id: staffId });
-
-    if (!error) {
-      fetchStaff();
-    } else {
-      alert('Failed to remove staff member: ' + error.message);
+  const handleRemoveStaff = async (staffId) => {
+    const staff = staffMembers.find(s => s.id === staffId);
+    if (staff && window.confirm(`Are you sure you want to remove ${staff.name}?`)) {
+      const { error } = await supabase.rpc('delete_staff_user', { user_id: staffId });
+      if (!error) {
+        fetchStaff();
+      } else {
+        alert('Failed to remove staff member: ' + error.message);
+      }
     }
-  }
-};
+  };
 
   return (
     <div className="min-h-screen bg-background">
       <RoleBasedNavigation userRole="admin" />
       <div className="pt-14 sm:pt-16 md:pt-20">
         <div className="max-w-[1440px] mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
+
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 md:gap-6 mb-5 md:mb-8">
             <div>
               <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-1 sm:mb-2">
@@ -126,7 +124,8 @@ const StaffManagement = () => {
               variant="default"
               iconName="UserPlus"
               iconPosition="left"
-              onClick={() => setIsAddModalOpen(true)}>
+              onClick={() => setIsAddModalOpen(true)}
+            >
               Add Staff Member
             </Button>
           </div>
@@ -155,15 +154,15 @@ const StaffManagement = () => {
               </div>
             </div>
           )}
+
         </div>
       </div>
 
-      {isAddModalOpen && (
-        <AddStaffModal
-          onClose={() => setIsAddModalOpen(false)}
-          onAddStaff={handleAddStaff}
-        />
-      )}
+      <AddStaffModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onAddStaff={handleAddStaff}
+      />
     </div>
   );
 };
