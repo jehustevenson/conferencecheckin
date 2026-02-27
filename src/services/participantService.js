@@ -112,7 +112,7 @@ export const bulkImportParticipants = async (rows, importedBy) => {
       full_name: row?.full_name || row?.fullName || row?.['Full Name'] || row?.['full name'] || '',
       email: (row?.email || row?.Email || '')?.toLowerCase()?.trim(),
       phone: row?.phone || row?.Phone || row?.['Phone Number'] || null,
-      ticket_type: normalizeTicketType(row?.ticket_type || row?.ticketType || row?.['Ticket Type'] || 'General Admission'),
+      ticket_type: 'General Admission',
       qr_id: row?.qr_id || row?.qrId || row?.['QR ID'] || `QR-IMPORT-${Date.now()}-${i + idx}`,
       imported_by: importedBy || null,
     }));
