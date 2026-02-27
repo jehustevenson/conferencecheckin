@@ -75,7 +75,7 @@ const LoginForm = () => {
         ?.from('user_profiles')
         ?.select('role')
         ?.eq('id', data?.user?.id)
-        ?.single();
+        ?.maybeSingle();
       if (profile?.role) {
         role = profile.role;
       } else {
