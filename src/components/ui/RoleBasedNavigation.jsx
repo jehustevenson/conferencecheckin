@@ -84,7 +84,7 @@ const RoleBasedNavigation = () => {
             <button
               onClick={handleSignOut}
               disabled={signingOut}
-              className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-sm text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-white bg-red-500/80 hover:bg-red-500 transition-colors"
               aria-label="Sign out"
             >
               <Icon name="LogOut" size={16} />
