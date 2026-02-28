@@ -28,13 +28,28 @@ const AttendeeList = () => {
   }, []);
 
   const handleCheckIn = async (participant) => {
-    if (participant.checked_in) return;
-    setProcessing(participant.id);
+  setProcessing(participant.id);
 
+  if (participant.checked_in) {
+    // Undo check-in
+    const { error } = await supabase
+      .from('participants')
+      .update({
+        checked_in: false,
+        checked_in_at: null,
+        checked_in_by: null,
+      })
+      .eq('id', participant.id);
+
+    if (!error) fetchAttendees();
+  } else {
+    // Check in
     const { error } = await checkInParticipant(participant.id, user?.id);
     if (!error) fetchAttendees();
-    setProcessing(null);
-  };
+  }
+
+  setProcessing(null);
+};
 
   const filtered = attendees.filter(a => {
     const matchesSearch =
@@ -166,11 +181,19 @@ const AttendeeList = () => {
                           </td>
                           <td className="px-4 py-3">
                             {a.checked_in ? (
-                              <span className="flex items-center gap-1 text-xs text-success font-medium">
-                                <Icon name="CheckCircle2" size={14} />
-                                Done
-                              </span>
-                            ) : (
+                                <button
+                                    onClick={() => handleCheckIn(a)}
+                                    disabled={processing === a.id}
+                                    className="flex items-center gap-1.5 px-3 py-1.5 bg-error/10 text-error rounded-lg text-xs font-medium hover:bg-error/20 transition-colors disabled:opacity-50"
+                                >
+                                    {processing === a.id ? (
+                                    <div className="w-3 h-3 border-2 border-error border-t-transparent rounded-full animate-spin" />
+                                    ) : (
+                                    <Icon name="UserX" size={13} />
+                                    )}
+                                    Undo
+                                </button>
+                                ) : (
                               <button
                                 onClick={() => handleCheckIn(a)}
                                 disabled={processing === a.id}
