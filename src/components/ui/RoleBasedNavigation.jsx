@@ -23,6 +23,7 @@ const RoleBasedNavigation = () => {
     { label: 'Backup Search', path: '/attendee-search-backup', icon: 'Search' },
     { label: 'Staff Controls', path: '/staff-management', icon: 'Users' },
     { label: 'CSV Import', path: '/csv-import', icon: 'FileUp' },
+    { label: 'Attendees', path: '/attendee-list', icon: 'List' },
   ];
 
   const navItems = role === 'admin' ? adminNavItems : staffNavItems;

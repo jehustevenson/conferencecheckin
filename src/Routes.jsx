@@ -11,6 +11,7 @@ import CsvImport from './pages/csv-import';
 import QrCodeScanner from './pages/qr-code-scanner';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import AttendeeList from './pages/attendee-list';
 
 const Routes = () => {
   return (
@@ -70,6 +71,14 @@ const Routes = () => {
             />
 
             <Route path="*" element={<NotFound />} />
+            <Route
+                path="/attendee-list"
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <AttendeeList />
+    </ProtectedRoute>
+  }
+/>
           </RouterRoutes>
         </ErrorBoundary>
       </AuthProvider>
