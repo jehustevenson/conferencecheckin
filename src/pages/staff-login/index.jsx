@@ -41,7 +41,6 @@ const StaffLogin = () => {
             <SecurityBadge />
           </div>
 
-          <CredentialsInfo />
 
           <div className="text-center space-y-2">
             <p className="text-xs md:text-sm text-muted-foreground">
