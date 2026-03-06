@@ -111,21 +111,21 @@ export const bulkImportParticipants = async (rows, importedBy) => {
   const BATCH_SIZE = 50;
 
   for (let i = 0; i < rows?.length; i += BATCH_SIZE) {
-    const batch = rows?.slice(i, i + BATCH_SIZE)?.map((row, idx) => {
-      // Only send columns that definitely exist - NO ticket_type
-      const record = {
-        full_name: row?.full_name || row?.fullName || row?.['Full Name'] || '',
-        email: (row?.email || row?.Email || '').toLowerCase().trim(),
-        qr_id: row?.qr_id || row?.qrId || row?.['QR ID'] || `QR-IMPORT-${Date.now()}-${i + idx}`,
-        imported_by: importedBy || null,
-      };
+    const record = {
+  full_name: row?.full_name || row?.fullName || row?.['Full Name'] || '',
+  email: (row?.email || row?.Email || '').toLowerCase().trim(),
+  qr_id: row?.qr_id || row?.qrId || row?.['QR ID'] || `QR-IMPORT-${Date.now()}-${i + idx}`,
+  imported_by: importedBy || null,
+};
 
-      // Only add phone if it exists
-      const phone = row?.phone || row?.Phone || row?.['Phone Number'] || null;
-      if (phone) record.phone = phone;
+const phone = row?.phone || row?.Phone || null;
+if (phone) record.phone = phone;
 
-      return record;
-    });
+const ticket_type = row?.ticket_type || row?.['ticket_type'] || null;
+if (ticket_type) record.ticket_type = ticket_type;
+
+const organization = row?.organization || row?.Organization || null;
+if (organization) record.organization = organization;
 
     const validBatch = batch.filter(r => r.full_name && r.email && isValidEmail(r.email));
     const invalidCount = batch.length - validBatch.length;
