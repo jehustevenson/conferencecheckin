@@ -137,7 +137,7 @@ if (organization) record.organization = organization;
     if (validBatch.length > 0) {
       const { error } = await supabase
         .from('participants')
-        .upsert(validBatch, { onConflict: 'email', ignoreDuplicates: false })
+        .upsert(validBatch, { onConflict: 'email', ignoreDuplicates: true })
         .select();
 
       if (error) {
