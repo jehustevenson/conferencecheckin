@@ -19,13 +19,14 @@ const SendTickets = () => {
   }, []);
 
   const fetchAttendees = async () => {
-    const { data } = await supabase
-      .from('participants')
-      .select('*')
-      .order('full_name', { ascending: true });
-    setAttendees(data || []);
-    setLoading(false);
-  };
+  const { data } = await supabase
+    .from('participants')
+    .select('*')
+    .eq('ticket_sent', false)
+    .order('full_name', { ascending: true });
+  setAttendees(data || []);
+  setLoading(false);
+};
 
   const buildEmailHtml = (participant) => {
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(participant.qr_id)}`;
@@ -79,17 +80,26 @@ const SendTickets = () => {
   };
 
   const sendEmail = async (participant) => {
-    const response = await fetch('/api/send-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        to: participant.email,
-        subject: '🎫 Your Dare to Lead Conference 2026 Ticket',
-        html: buildEmailHtml(participant),
-      }),
-    });
-    return response.ok;
-  };
+  const response = await fetch('/api/send-email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      to: participant.email,
+      subject: '🎫 Your Dare to Lead Conference 2026 Ticket',
+      html: buildEmailHtml(participant),
+    }),
+  });
+
+  if (response.ok) {
+    // Mark as sent in database
+    await supabase
+      .from('participants')
+      .update({ ticket_sent: true })
+      .eq('id', participant.id);
+  }
+
+  return response.ok;
+};
 
   const runBulkSend = async (list) => {
     setSending(true);
