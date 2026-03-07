@@ -13,6 +13,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AttendeeList from './pages/attendee-list';
 import Register from './pages/register';
+import SendTickets from './pages/send-tickets';
 
 const Routes = () => {
   return (
@@ -70,6 +71,14 @@ const Routes = () => {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/send-tickets"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <SendTickets />
+                </ProtectedRoute>
+              }
+/>
               <Route path="/register" element={<Register />} />
             <Route path="*" element={<NotFound />} />
             <Route
