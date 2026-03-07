@@ -16,100 +16,68 @@ const Register = () => {
   const generateQrId = () => `DTL-${Date.now()}-${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
 
   const sendTicketEmail = async (participant) => {
-    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(participant.qr_id)}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(participant.qr_id)}`;
 
-    const emailHtml = `
-      <!DOCTYPE html>
-      <html>
-      <head><meta charset="UTF-8"></head>
-      <body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,sans-serif;">
-        <div style="max-width:600px;margin:40px auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
-          
-          <!-- Header -->
-          <div style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);padding:40px 32px;text-align:center;">
-            <p style="color:#f5a623;font-size:13px;font-weight:bold;letter-spacing:3px;margin:0 0 8px 0;">SHE DARES 2 LEAD PRESENTS</p>
-            <h1 style="color:white;font-size:32px;font-weight:900;margin:0 0 8px 0;">DARE TO LEAD</h1>
-            <h2 style="color:white;font-size:18px;font-weight:400;margin:0 0 16px 0;">CONFERENCE 2026</h2>
-            <div style="background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.4);border-radius:8px;padding:10px 20px;display:inline-block;">
-              <p style="color:#f5a623;font-size:13px;margin:0;font-style:italic;">Ready to Lead the Future — From Barriers to Breakthroughs</p>
-            </div>
-          </div>
-
-          <!-- Greeting -->
-          <div style="padding:32px 32px 0;">
-            <h2 style="color:#1a1a2e;font-size:22px;margin:0 0 12px 0;">You're registered! 🎉</h2>
-            <p style="color:#555;font-size:15px;line-height:1.6;margin:0 0 8px 0;">
-              Dear <strong>${participant.full_name}</strong>,
-            </p>
-            <p style="color:#555;font-size:15px;line-height:1.6;margin:0;">
-              Your registration for the Dare to Lead Conference 2026 has been confirmed. 
-              Please find your unique entry QR code below — present it at the check-in desk on the day of the event.
-            </p>
-          </div>
-
-          <!-- Event Details -->
-          <div style="margin:24px 32px;background:#f8f9ff;border-radius:12px;padding:20px 24px;">
-            <h3 style="color:#1a1a2e;font-size:14px;font-weight:bold;letter-spacing:1px;margin:0 0 16px 0;">EVENT DETAILS</h3>
-            <table style="width:100%;border-collapse:collapse;">
-              <tr>
-                <td style="padding:6px 0;color:#888;font-size:13px;width:100px;">📅 Date</td>
-                <td style="padding:6px 0;color:#1a1a2e;font-size:13px;font-weight:600;">Saturday, 7th March 2026</td>
-              </tr>
-              <tr>
-                <td style="padding:6px 0;color:#888;font-size:13px;">⏰ Time</td>
-                <td style="padding:6px 0;color:#1a1a2e;font-size:13px;font-weight:600;">9:00 AM</td>
-              </tr>
-              <tr>
-                <td style="padding:6px 0;color:#888;font-size:13px;">📍 Venue</td>
-                <td style="padding:6px 0;color:#1a1a2e;font-size:13px;font-weight:600;">Spiritlife Revival Ministries,<br>The Oracles' Place, Adenta</td>
-              </tr>
-              <tr>
-                <td style="padding:6px 0;color:#888;font-size:13px;">🎫 Category</td>
-                <td style="padding:6px 0;color:#1a1a2e;font-size:13px;font-weight:600;">${participant.ticket_type}</td>
-              </tr>
-            </table>
-          </div>
-
-          <!-- QR Code -->
-          <div style="padding:0 32px;text-align:center;">
-            <h3 style="color:#1a1a2e;font-size:14px;font-weight:bold;letter-spacing:1px;margin:0 0 16px 0;">YOUR ENTRY QR CODE</h3>
-            <div style="background:#f8f9ff;border:2px dashed #d0d5ff;border-radius:16px;padding:24px;display:inline-block;">
-              <img src="${qrUrl}" alt="QR Code" width="200" height="200" style="display:block;margin:0 auto 12px;" />
-              <p style="color:#888;font-size:11px;font-family:monospace;margin:0;">${participant.qr_id}</p>
-            </div>
-            <p style="color:#888;font-size:12px;margin:12px 0 0;">Screenshot or print this QR code and present it at the entrance</p>
-          </div>
-
-          <!-- Footer -->
-          <div style="margin:32px;padding:20px;background:#1a1a2e;border-radius:12px;text-align:center;">
-            <p style="color:#f5a623;font-size:13px;font-weight:bold;margin:0 0 8px 0;">Follow us</p>
-            <p style="color:#aaa;font-size:12px;margin:0;">
-              Facebook & LinkedIn: She Dares To Lead &nbsp;|&nbsp; Instagram: @shedares2lead_ &nbsp;|&nbsp; Twitter: @SheDares2Lead
-            </p>
-          </div>
-
-          <div style="padding:16px 32px;text-align:center;">
-            <p style="color:#ccc;font-size:11px;margin:0;">© 2026 She Dares 2 Lead. All rights reserved.</p>
+  const emailHtml = `
+    <!DOCTYPE html>
+    <html>
+    <head><meta charset="UTF-8"></head>
+    <body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,sans-serif;">
+      <div style="max-width:600px;margin:40px auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+        <div style="background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);padding:40px 32px;text-align:center;">
+          <p style="color:#f5a623;font-size:13px;font-weight:bold;letter-spacing:3px;margin:0 0 8px 0;">SHE DARES 2 LEAD PRESENTS</p>
+          <h1 style="color:white;font-size:32px;font-weight:900;margin:0 0 8px 0;">DARE TO LEAD</h1>
+          <h2 style="color:white;font-size:18px;font-weight:400;margin:0 0 16px 0;">CONFERENCE 2026</h2>
+          <div style="background:rgba(245,166,35,0.15);border:1px solid rgba(245,166,35,0.4);border-radius:8px;padding:10px 20px;display:inline-block;">
+            <p style="color:#f5a623;font-size:13px;margin:0;font-style:italic;">Ready to Lead the Future — From Barriers to Breakthroughs</p>
           </div>
         </div>
-      </body>
-      </html>
-    `;
+        <div style="padding:32px 32px 0;">
+          <h2 style="color:#1a1a2e;font-size:22px;margin:0 0 12px 0;">You're registered! 🎉</h2>
+          <p style="color:#555;font-size:15px;line-height:1.6;margin:0 0 8px 0;">Dear <strong>${participant.full_name}</strong>,</p>
+          <p style="color:#555;font-size:15px;line-height:1.6;margin:0;">Your registration for the Dare to Lead Conference 2026 has been confirmed. Please find your unique entry QR code below — present it at the check-in desk on the day of the event.</p>
+        </div>
+        <div style="margin:24px 32px;background:#f8f9ff;border-radius:12px;padding:20px 24px;">
+          <h3 style="color:#1a1a2e;font-size:14px;font-weight:bold;letter-spacing:1px;margin:0 0 16px 0;">EVENT DETAILS</h3>
+          <table style="width:100%;border-collapse:collapse;">
+            <tr><td style="padding:6px 0;color:#888;font-size:13px;width:100px;">📅 Date</td><td style="padding:6px 0;color:#1a1a2e;font-size:13px;font-weight:600;">Saturday, 7th March 2026</td></tr>
+            <tr><td style="padding:6px 0;color:#888;font-size:13px;">⏰ Time</td><td style="padding:6px 0;color:#1a1a2e;font-size:13px;font-weight:600;">9:00 AM</td></tr>
+            <tr><td style="padding:6px 0;color:#888;font-size:13px;">📍 Venue</td><td style="padding:6px 0;color:#1a1a2e;font-size:13px;font-weight:600;">Spiritlife Revival Ministries, The Oracles' Place, Adenta</td></tr>
+            <tr><td style="padding:6px 0;color:#888;font-size:13px;">🎫 Category</td><td style="padding:6px 0;color:#1a1a2e;font-size:13px;font-weight:600;">${participant.ticket_type || 'Participant'}</td></tr>
+          </table>
+        </div>
+        <div style="padding:0 32px;text-align:center;">
+          <h3 style="color:#1a1a2e;font-size:14px;font-weight:bold;letter-spacing:1px;margin:0 0 16px 0;">YOUR ENTRY QR CODE</h3>
+          <div style="background:#f8f9ff;border:2px dashed #d0d5ff;border-radius:16px;padding:24px;display:inline-block;">
+            <img src="${qrUrl}" alt="QR Code" width="200" height="200" style="display:block;margin:0 auto 12px;" />
+            <p style="color:#888;font-size:11px;font-family:monospace;margin:0;">${participant.qr_id}</p>
+          </div>
+          <p style="color:#888;font-size:12px;margin:12px 0 0;">Screenshot or print this QR code and present it at the entrance</p>
+        </div>
+        <div style="margin:32px;padding:20px;background:#1a1a2e;border-radius:12px;text-align:center;">
+          <p style="color:#f5a623;font-size:13px;font-weight:bold;margin:0 0 8px 0;">Follow us</p>
+          <p style="color:#aaa;font-size:12px;margin:0;">Facebook & LinkedIn: She Dares To Lead &nbsp;|&nbsp; Instagram: @shedares2lead_ &nbsp;|&nbsp; Twitter: @SheDares2Lead</p>
+        </div>
+        <div style="padding:16px 32px;text-align:center;">
+          <p style="color:#ccc;font-size:11px;margin:0;">© 2026 She Dares 2 Lead. All rights reserved.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
 
-    await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${import.meta.env.VITE_RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: 'Dare2Lead Conference <onboarding@resend.dev>',
-        to: participant.email,
-        subject: '🎫 Your Dare to Lead Conference 2026 Ticket',
-        html: emailHtml,
-      }),
-    });
-  };
+  const response = await fetch('/api/send-email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      to: participant.email,
+      subject: '🎫 Your Dare to Lead Conference 2026 Ticket',
+      html: emailHtml,
+    }),
+  });
+
+  return response.ok;
+};
 
   const handleSubmit = async () => {
     setError('');

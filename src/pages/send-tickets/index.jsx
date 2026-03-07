@@ -78,22 +78,18 @@ const SendTickets = () => {
     `;
   };
 
-  const sendEmail = async (participant) => {
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${import.meta.env.VITE_RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: 'Dare2Lead Conference <onboarding@resend.dev>',
-        to: participant.email,
-        subject: '🎫 Your Dare to Lead Conference 2026 Ticket',
-        html: buildEmailHtml(participant),
-      }),
-    });
-    return response.ok;
-  };
+ const sendEmail = async (participant) => {
+  const response = await fetch('/api/send-email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      to: participant.email,
+      subject: '🎫 Your Dare to Lead Conference 2026 Ticket',
+      html: buildEmailHtml(participant),
+    }),
+  });
+  return response.ok;
+};
 
   const handleSendAll = async () => {
     if (!window.confirm(`Send QR tickets to all ${attendees.length} attendees?`)) return;
