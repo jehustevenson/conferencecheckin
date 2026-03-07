@@ -12,6 +12,7 @@ import QrCodeScanner from './pages/qr-code-scanner';
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import AttendeeList from './pages/attendee-list';
+import Register from './pages/register';
 
 const Routes = () => {
   return (
@@ -69,7 +70,7 @@ const Routes = () => {
                 </ProtectedRoute>
               }
             />
-
+              <Route path="/register" element={<Register />} />
             <Route path="*" element={<NotFound />} />
             <Route
                 path="/attendee-list"
@@ -77,6 +78,8 @@ const Routes = () => {
                   <ProtectedRoute allowedRoles={['admin']}>
                     <AttendeeList />
     </ProtectedRoute>
+
+    
   }
 />
           </RouterRoutes>
