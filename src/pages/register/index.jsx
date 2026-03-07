@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from '../../lib/supabase';
 
-const TICKET_TYPES = ['Participant', 'Guest', 'Mentee', 'Mentee (Cohort 2)', 'Sponsor/Partner'];
+const TICKET_TYPES = ['Participant', 'Guest', 'Mentee', 'Mentee (Cohort 2)', 'Mentee (Cohort 3)', 'Sponsor/Partner', 'Volunteer'];
 
 const Register = () => {
   const [form, setForm] = useState({
