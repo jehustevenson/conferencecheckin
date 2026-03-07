@@ -1,3 +1,5 @@
+import nodemailer from 'nodemailer';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -6,28 +8,24 @@ export default async function handler(req, res) {
   const { to, subject, html } = req.body;
 
   try {
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.VITE_RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD,
       },
-      body: JSON.stringify({
-        from: 'Dare2Lead Conference <onboarding@resend.dev>',
-        to,
-        subject,
-        html,
-      }),
     });
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      return res.status(400).json({ error: data });
-    }
+    await transporter.sendMail({
+      from: `"Dare2Lead Conference" <${process.env.GMAIL_USER}>`,
+      to,
+      subject,
+      html,
+    });
 
     return res.status(200).json({ success: true });
   } catch (error) {
+    console.log('Email error:', error.message);
     return res.status(500).json({ error: error.message });
   }
 }
