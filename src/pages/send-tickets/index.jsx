@@ -7,7 +7,7 @@ const SendTickets = () => {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [sentCount, setSentCount] = useState(0);
-  const [failedCount, setFailedCount] = useState(0);
+  const [failedList, setFailedList] = useState([]);
   const [progress, setProgress] = useState(0);
   const [done, setDone] = useState(false);
   const [singleEmail, setSingleEmail] = useState('');
@@ -78,43 +78,54 @@ const SendTickets = () => {
     `;
   };
 
- const sendEmail = async (participant) => {
-  const response = await fetch('/api/send-email', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      to: participant.email,
-      subject: '🎫 Your Dare to Lead Conference 2026 Ticket',
-      html: buildEmailHtml(participant),
-    }),
-  });
-  return response.ok;
-};
+  const sendEmail = async (participant) => {
+    const response = await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        to: participant.email,
+        subject: '🎫 Your Dare to Lead Conference 2026 Ticket',
+        html: buildEmailHtml(participant),
+      }),
+    });
+    return response.ok;
+  };
 
-  const handleSendAll = async () => {
-    if (!window.confirm(`Send QR tickets to all ${attendees.length} attendees?`)) return;
+  const runBulkSend = async (list) => {
     setSending(true);
     setSentCount(0);
-    setFailedCount(0);
+    setFailedList([]);
     setProgress(0);
     setDone(false);
 
     let sent = 0;
-    let failed = 0;
+    const failed = [];
 
-    for (let i = 0; i < attendees.length; i++) {
-      const success = await sendEmail(attendees[i]);
-      if (success) sent++;
-      else failed++;
-      setProgress(Math.round(((i + 1) / attendees.length) * 100));
+    for (let i = 0; i < list.length; i++) {
+      const success = await sendEmail(list[i]);
+      if (success) {
+        sent++;
+      } else {
+        failed.push(list[i]);
+      }
+      setProgress(Math.round(((i + 1) / list.length) * 100));
       setSentCount(sent);
-      setFailedCount(failed);
-      // Small delay to avoid rate limiting
-      await new Promise(r => setTimeout(r, 200));
+      setFailedList([...failed]);
+      await new Promise(r => setTimeout(r, 1000));
     }
 
     setSending(false);
     setDone(true);
+  };
+
+  const handleSendAll = async () => {
+    if (!window.confirm(`Send QR tickets to all ${attendees.length} attendees?`)) return;
+    await runBulkSend(attendees);
+  };
+
+  const handleRetryFailed = async () => {
+    if (!window.confirm(`Retry sending to ${failedList.length} failed attendees?`)) return;
+    await runBulkSend(failedList);
   };
 
   const handleSendSingle = async () => {
@@ -193,14 +204,33 @@ const SendTickets = () => {
                     </div>
                     <div className="flex gap-4 mt-3 text-sm">
                       <span className="text-success">✓ {sentCount} sent</span>
-                      <span className="text-red-500">✗ {failedCount} failed</span>
+                      <span className="text-red-500">✗ {failedList.length} failed</span>
                     </div>
                   </div>
                 )}
 
                 {done && (
-                  <div className="mb-4 bg-success/10 border border-success/20 rounded-xl p-4">
-                    <p className="text-success font-medium text-sm">✓ Done! {sentCount} tickets sent, {failedCount} failed.</p>
+                  <div className="mb-4 space-y-3">
+                    <div className="bg-success/10 border border-success/20 rounded-xl p-4">
+                      <p className="text-success font-medium text-sm">✓ Done! {sentCount} tickets sent successfully.</p>
+                    </div>
+                    {failedList.length > 0 && (
+                      <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                        <p className="text-red-600 font-medium text-sm mb-3">✗ {failedList.length} failed to send:</p>
+                        <div className="max-h-40 overflow-y-auto space-y-1 mb-3">
+                          {failedList.map(a => (
+                            <p key={a.id} className="text-xs text-red-500">{a.full_name} — {a.email}</p>
+                          ))}
+                        </div>
+                        <button
+                          onClick={handleRetryFailed}
+                          disabled={sending}
+                          className="w-full py-2.5 bg-red-500 text-white rounded-xl text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50"
+                        >
+                          Retry {failedList.length} Failed
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
 
